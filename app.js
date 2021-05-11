@@ -1,30 +1,34 @@
-require('babel-register');
-const http = require('http');
+require("babel-register");
+const http = require("http");
+const fs = require("fs");
 
-http.createServer((req, res) => {
+http
+  .createServer((req, res) => {
+    if (req.url == "/") {
+      res.writeHead(200, { "Content-type": "text/html" });
+      res.write("<h1>Accueil\n</h1>");
+      res.end();
+    } else if (req.url == "/test") {
+      fs.readFile("test.txt", "utf-8", (err, data) => {
+        if (err) {
+          send404(res)
+        } else {
+          res.writeHead(200, { "Content-type": "text/html" });
+          res.write(data);
+          res.end();
+        }
+      })
+    } else {
+      send404(res)
+    }
+  })
+  .listen(8080);
 
-  if (req.url =='/') {
-    res.writeHead(200, {'Content-type' : 'text/html'})
-    res.write("<h1>Accueil\n</h1>")
-  } else {
-    res.writeHead(404, {'Content-type' : 'text/html'})
-    res.write("<span style='color:red'>Erreur 404</span>")
-  }
-  res.end()
-}).listen(8080)
-
-
-
-
-
-
-
-
-
-
-
-
-
+function send404(res) {
+  res.writeHead(404, { "Content-type": "text/html" })
+  res.write("<span style='color:red'>Erreur 404</span>")
+  res.end();
+}
 
 ////////////////////////////////////////
 //  Module FS
@@ -45,7 +49,6 @@ http.createServer((req, res) => {
 //   }
 // })
 
-
 ////////////////////////////////////////
 //  Module OS
 ////////////////////////////////////////
@@ -54,7 +57,6 @@ http.createServer((req, res) => {
 
 // console.log(os.arch());
 // console.log(os.homedir());
-
 
 ////////////////////////////////////////
 //  Utilisation ECMAScript6 (ES6)
