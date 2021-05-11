@@ -1,38 +1,51 @@
-require("babel-register");
-const http = require("http");
-const fs = require("fs");
+const mod1 = require('module1')
+const mod2 = require('./module2')
 
-http
-  .createServer((req, res) => {
-    if (req.url == "/") {
-      res.writeHead(200, { "Content-type": "text/html" });
-      res.write("<h1>Accueil\n</h1>");
-      res.end();
-    } else if (req.url == "/test") {
-      fs.readFile("test.txt", "utf-8", (err, data) => {
-        if (err) {
-          send404(res)
-        } else {
-          res.writeHead(200, { "Content-type": "text/html" });
-          res.write(data);
-          res.end();
-        }
-      })
-    } else {
-      send404(res)
-    }
-  })
-  .listen(8080);
+mod1.sayHello()
+mod2.sayHi()
 
-function send404(res) {
-  res.writeHead(404, { "Content-type": "text/html" })
-  res.write("<span style='color:red'>Erreur 404</span>")
-  res.end();
-}
+console.log(mod1.hello);
 
-////////////////////////////////////////
+
+
+//////////////////////////////////////////////////
+//  Module HTTP et combinaisons des modules
+//////////////////////////////////////////////////
+// require("babel-register");
+// const http = require("http");
+// const fs = require("fs");
+
+// http
+//   .createServer((req, res) => {
+//     if (req.url == "/") {
+//       res.writeHead(200, { "Content-type": "text/html" });
+//       res.write("<h1>Accueil\n</h1>");
+//       res.end();
+//     } else if (req.url == "/test") {
+//       fs.readFile("test.txt", "utf-8", (err, data) => {
+//         if (err) {
+//           send404(res)
+//         } else {
+//           res.writeHead(200, { "Content-type": "text/html" });
+//           res.write(data);
+//           res.end();
+//         }
+//       })
+//     } else {
+//       send404(res)
+//     }
+//   })
+//   .listen(8080);
+
+// function send404(res) {
+//   res.writeHead(404, { "Content-type": "text/html" })
+//   res.write("<span style='color:red'>Erreur 404</span>")
+//   res.end();
+// }
+
+//////////////////////////////////////////////////
 //  Module FS
-////////////////////////////////////////
+//////////////////////////////////////////////////
 // const fs = require('fs');
 
 // fs.readFile('test.txt', 'utf-8', (err, data) => {
