@@ -1,5 +1,5 @@
 require("babel-register");
-const func = require("functions");
+const {success, error} = require("functions");
 const express = require("express");
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
@@ -31,16 +31,16 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // app.use(express.bodyParser.urlencoded({ extended: true }))
 
 app.get("/api/v1/members/:id", (req, res) => {
-  res.json(func.success(members[req.params.id - 1].name));
+  res.json(success(members[req.params.id - 1].name));
 });
 
 app.get("/api/v1/members/", (req, res) => {
   if (req.query.max != undefined && req.query.max > 0) {
-    res.json(func.success(members.slice(0, req.query.max)));
+    res.json(success(members.slice(0, req.query.max)));
   } else if (req.query.max != undefined) {
-    res.json(func.error("wrong max value"));
+    res.json(error("wrong max value"));
   } else {
-    res.json(func.success(members));
+    res.json(success(members));
   }
 });
 
@@ -55,7 +55,7 @@ app.post("/api/v1/members", (req, res) => {
     }
 
     if (sameName) {
-      res.json(func.error("name already used !!!"));
+      res.json(error("name already used !!!"));
     } else {
       let member = {
         id: members.length + 1,
@@ -64,10 +64,10 @@ app.post("/api/v1/members", (req, res) => {
 
       members.push(member);
 
-      res.json(func.success(member));
+      res.json(success(member));
     }
   } else {
-    res.json(func.error("no name value"));
+    res.json(error("no name value"));
   }
 });
 
