@@ -31,6 +31,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // app.use(express.bodyParser.urlencoded({ extended: true }))
 
 app.get("/api/v1/members/:id", (req, res) => {
+
+  let index = getIndex(req.params.id);
+  if (typeof(index) == 'string') {
+    res.json(error(index))
+  } else {
+    res.json(success(members[index]))
+  }
   res.json(success(members[req.params.id - 1].name));
 });
 
@@ -97,3 +104,12 @@ app.post("/api/v1/members", (req, res) => {
 // })
 
 app.listen(8080, () => console.log("Started on port 8080"));
+
+function getIndex (id) {
+  for (let i = 0; i < members.length; i++){
+    if (members[i].id == id)
+      return i
+  } 
+
+  return 'wrong id'
+}
