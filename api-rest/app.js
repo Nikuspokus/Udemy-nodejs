@@ -1,5 +1,5 @@
 require("babel-register");
-const {success, error} = require("functions");
+const { success, error } = require("functions");
 const express = require("express");
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
@@ -31,14 +31,38 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // app.use(express.bodyParser.urlencoded({ extended: true }))
 
 app.get("/api/v1/members/:id", (req, res) => {
-
   let index = getIndex(req.params.id);
-  if (typeof(index) == 'string') {
+
+  if (typeof index == "string") {
     res.json(error(index))
   } else {
     res.json(success(members[index]))
   }
+
   res.json(success(members[req.params.id - 1].name));
+});
+
+app.put("/api/v1/members/:id", (req, res) => {
+  let index = getIndex(req.params.id);
+
+  if (typeof index == "string") {
+    res.json(error(index))
+  } else {
+    let same = false
+
+    for (let i = 0; i < members.length; i++) {
+      if (req.body.name == members[i].name && req.params.id != members[i].id) {
+        same = true;
+        break;
+      }
+    }
+    if (same) {
+      res.json(error("same name !!"));
+    } else {
+      member[index].name = req.body.name;
+      res.json(success(true));
+    }
+  }
 });
 
 app.get("/api/v1/members/", (req, res) => {
@@ -105,11 +129,10 @@ app.post("/api/v1/members", (req, res) => {
 
 app.listen(8080, () => console.log("Started on port 8080"));
 
-function getIndex (id) {
-  for (let i = 0; i < members.length; i++){
-    if (members[i].id == id)
-      return i
-  } 
+function getIndex(id) {
+  for (let i = 0; i < members.length; i++) {
+    if (members[i].id == id) return i;
+  }
 
-  return 'wrong id'
+  return "wrong id";
 }
