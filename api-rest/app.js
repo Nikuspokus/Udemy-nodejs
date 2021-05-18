@@ -1,10 +1,12 @@
 require("babel-register");
+//probleme avec functions car le require fonctions fait reference à un dossier supprimé de nodeJS
 const { success, error } = require("functions");
 const mysql = require("mysql");
 const bodyParser = require("body-parser");
 const express = require("express");
 const morgan = require("morgan");
 const config = require("./config");
+const { query } = require("express");
 
 const db = mysql.createConnection({
   host: 'localhost',
@@ -21,8 +23,11 @@ const db = mysql.createConnection({
 // })
 
 db.connect((err) => {
+
   if (err) console.log(err.message);
+
   else {
+
     console.log("Connected");
 
     const app = express();
@@ -37,14 +42,23 @@ db.connect((err) => {
     MembersRouter.route("/:id")
 
       //Récupère un membre avec son ID
-      .get((req, res) => {
-        let index = getIndex(req.params.id);
-        if (typeof index == "string") {
-          res.json(error(index));
-        } else {
-          res.json(success(members[index]));
-        }
-        res.json(success(members[req.params.id - 1].name));
+      .get((req, res) => {+
+
+        db.query('SELECT * FROM members WHERE id = ?', [req.params.id], (err, result) => {
+          if (err) {
+            res.json(error(err.message))
+          } else {
+            res.json(success(result))
+          }
+        })
+
+        // let index = getIndex(req.params.id);
+        // if (typeof index == "string") {
+        //   res.json(error(index));
+        // } else {
+        //   res.json(success(members[index]));
+        // }
+        // res.json(success(members[req.params.id - 1].name));
       })
 
       //Modifie un membre avec son ID
@@ -84,16 +98,31 @@ db.connect((err) => {
         }
       });
 
-    MembersRouter.route("/")
+      MembersRouter.route("/")
 
       //Récupère tous les membres
       .get((req, res) => {
         if (req.query.max != undefined && req.query.max > 0) {
-          res.json(success(members.slice(0, req.query.max)));
+
+          // requete de récupération de tous les membres avec un max
+          db.query('SELECT * FROM members LIMIT 0, ?', [req.query.max], (err, result) => {
+            if (err) {
+              res.json(error(err.message))
+            } else {
+              res.json(success(result))
+            }
+          })
         } else if (req.query.max != undefined) {
           res.json(error("wrong max value"));
         } else {
-          res.json(success(members));
+// requete de récupération de tous les membres
+          db.query('SELECT * FROM members', (err, result) => {
+            if (err) {
+              res.json(error(err.message))
+            } else {
+              res.json(success(result))
+            }
+          })
         }
       })
 
