@@ -24,7 +24,7 @@ const db = mysql.createConnection({
 
 db.connect((err) => {
 
-  if (err) console.log(err.message);
+  if (err) console.log(err.message)
 
   else {
 
@@ -177,7 +177,7 @@ db.connect((err) => {
     //     res.send(req.params)
     // })
 
-    app.use(config.return + "members", MembersRouter);
+    app.use(config.rootAPI + "members", MembersRouter);
 
     app.listen(config.port, () =>
       console.log("Started on port " + config.port)
