@@ -48,17 +48,15 @@ db.connect((err) => {
           if (err) {
             res.json(error(err.message))
           } else {
-            res.json(success(result))
+
+            if (result[0] != undefined) {
+              res.json(success(result))
+            } else {
+              res.json(error("Wrong ID !!"))
+            }
+
           }
         })
-
-        // let index = getIndex(req.params.id);
-        // if (typeof index == "string") {
-        //   res.json(error(index));
-        // } else {
-        //   res.json(success(members[index]));
-        // }
-        // res.json(success(members[req.params.id - 1].name));
       })
 
       //Modifie un membre avec son ID
